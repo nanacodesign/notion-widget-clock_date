@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Notion Clock + Flip Calendar Widget</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@700&family=Oswald:wght@500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =========================
+       RESET & BASE LAYOUT
+    ========================== */
+    body {
+      margin: 0;
+      background-color: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    /* Main horizontal container */
+    .widget {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* =========================
+       ANALOG CLOCK
+    ========================== */
+    .clock {
+      width: 160px;
+      height: 160px;
+      background-color: rgba(255, 255, 255, 0.85);
+      border-radius: 50%;
+      position: relative;
+    }
+
+    /* Clock numbers (shared style) */
+    .number {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      font-family: "Barlow", sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: #191919;
+      width: 24px;
+      height: 24px;
+      text-align: center;
+      line-height: 24px;
+      transform: translate(-50%, -50%); /* Base centering */
+    }
+
+    /* Number positions using rotation around center */
+    /* This keeps everything consistent and easy to tweak */
+    .num12 { transform: translate(-50%, -50%) rotate(0deg)   translateY(-62px) rotate(0deg); }
+    .num1  { transform: translate(-50%, -50%) rotate(30deg)  translateY(-62px) rotate(-30deg); }
+    .num2  { transform: translate(-50%, -50%) rotate(60deg)  translateY(-62px) rotate(-60deg); }
+    .num3  { transform: translate(-50%, -50%) rotate(90deg)  translateY(-62px) rotate(-90deg); }
+    .num4  { transform: translate(-50%, -50%) rotate(120deg) translateY(-62px) rotate(-120deg); }
+    .num5  { transform: translate(-50%, -50%) rotate(150deg) translateY(-62px) rotate(-150deg); }
+    .num6  { transform: translate(-50%, -50%) rotate(180deg) translateY(-62px) rotate(-180deg); }
+    .num7  { transform: translate(-50%, -50%) rotate(210deg) translateY(-62px) rotate(-210deg); }
+    .num8  { transform: translate(-50%, -50%) rotate(240deg) translateY(-62px) rotate(-240deg); }
+    .num9  { transform: translate(-50%, -50%) rotate(270deg) translateY(-62px) rotate(-270deg); }
+    .num10 { transform: translate(-50%, -50%) rotate(300deg) translateY(-62px) rotate(-300deg); }
+    .num11 { transform: translate(-50%, -50%) rotate(330deg) translateY(-62px) rotate(-330deg); }
+
+    /* Tick marks container */
+    .ticks {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .tick {
+      position: absolute;
+      width: 2px;
+      height: 6px;
+      background-color: #191919;
+      left: 50%;
+      top: 0;
+      transform-origin: 50% 80px; /* half of clock size */
+    }
+
+    .tick.major {
+      width: 4px;
+    }
+
+    /* Clock hands */
+    .hand {
+      position: absolute;
+      left: 50%;
+      bottom: 50%;
+      transform-origin: bottom center;
+      background-color: #191919;
+      border-radius: 4px;
+    }
+
+    .hour-hand {
+      width: 6px;
+      height: 40px;
+      margin-left: -3px;
+    }
+
+    .minute-hand {
+      width: 4px;
+      height: 58px;
+      margin-left: -2px;
+    }
+
+    .second-hand {
+      width: 2px;
+      height: 50px;
+      background-color: red;
+      margin-left: -1px;
+    }
+
+    /* Center dot */
+    .center-cap {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      background-color: red;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* =========================
+       FLIP CALENDAR
+    ========================== */
+    .calendar {
+      display: flex;
+      gap: 12px;
+      font-family: "Oswald", sans-serif;
+    }
+
+    .flip-card {
+      background-color: #1a1a1a;
+      color: #f0f0f0;
+      min-width: 90px;
+      border-radius: 8px;
+      font-size: 48px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+    }
+
+    .flip-card span {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      line-height: 1;
+      padding: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="widget">
+    <!-- Analog Clock -->
+    <div class="clock">
+      <div class="ticks" id="ticks"></div>
+
+      <!-- Full 1–12 numbers -->
+      <div class="number num12">12</div>
+      <div class="number num1">1</div>
+      <div class="number num2">2</div>
+      <div class="number num3">3</div>
+      <div class="number num4">4</div>
+      <div class="number num5">5</div>
+      <div class="number num6">6</div>
+      <div class="number num7">7</div>
+      <div class="number num8">8</div>
+      <div class="number num9">9</div>
+      <div class="number num10">10</div>
+      <div class="number num11">11</div>
+
+      <div class="hand hour-hand" id="hourHand"></div>
+      <div class="hand minute-hand" id="minuteHand"></div>
+      <div class="hand second-hand" id="secondHand"></div>
+      <div class="center-cap"></div>
+    </div>
+
+    <!-- Flip Calendar -->
+    <div class="calendar">
+      <div class="flip-card"><span id="day">TUE</span></div>
+      <div class="flip-card"><span id="date">1</span></div>
+      <div class="flip-card"><span id="month">MAY</span></div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================
+       CLOCK LOGIC
+    ========================== */
+
+    // Create 60 tick marks
+    const ticksContainer = document.getElementById("ticks");
+    for (let i = 0; i < 60; i++) {
+      const tick = document.createElement("div");
+      tick.className = "tick" + (i % 5 === 0 ? " major" : "");
+      tick.style.transform = `rotate(${i * 6}deg)`;
+      ticksContainer.appendChild(tick);
+    }
+
+    // Update clock hands
+    function updateClock() {
+      const now = new Date();
+      const seconds = now.getSeconds();
+      const minutes = now.getMinutes();
+      const hours = now.getHours();
+
+      document.getElementById("secondHand").style.transform =
+        `rotate(${seconds * 6}deg)`;
+      document.getElementById("minuteHand").style.transform =
+        `rotate(${minutes * 6 + seconds * 0.1}deg)`;
+      document.getElementById("hourHand").style.transform =
+        `rotate(${(hours % 12) * 30 + minutes * 0.5}deg)`;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    /* =========================
+       DATE LOGIC
+    ========================== */
+    function updateDate() {
+      const now = new Date();
+      const days = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+      const months = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+
+      document.getElementById("day").innerText = days[now.getDay()];
+      document.getElementById("date").innerText = now.getDate();
+      document.getElementById("month").innerText = months[now.getMonth()];
+    }
+
+    updateDate();
+    setInterval(updateDate, 60000);
+  </script>
+</body>
+</html>
