@@ -14,13 +14,30 @@
 
   <style>
     /* =========================
-       TRANSPARENT BACKGROUND FIX
+       NOTION EMBED BACKGROUND
+       - Light: #FFFFFF
+       - Dark:  #191919
+       Uses OS / browser preference (prefers-color-scheme)
     ========================== */
-    html,
-    body {
-      background: transparent !important;
+    :root {
+      --page-bg: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.7);
     }
 
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --page-bg: #191919;
+      }
+    }
+
+    html,
+    body {
+      background: var(--page-bg) !important;
+    }
+
+    /* =========================
+       RESET & BASE LAYOUT
+    ========================== */
     body {
       margin: 0;
       display: flex;
@@ -28,9 +45,9 @@
       align-items: center;
 
       /* Notion embed/iframe friendly */
-      height: auto;          /* IMPORTANT: don't force 100vh */
+      height: auto;     /* don't force 100vh */
       padding: 0;
-      overflow: hidden;      /* prevent white edges/scroll */
+      overflow: hidden; /* prevent edges/scroll */
     }
 
     /* Main horizontal container */
@@ -39,6 +56,7 @@
       align-items: center;
       gap: 20px;
       background: transparent;
+      padding: 0;
     }
 
     /* =========================
@@ -47,12 +65,12 @@
     .clock {
       width: 160px;
       height: 160px;
-      background-color: #f0f0f0; /* clock face */
+      background-color: #f0f0f0; /* clock face stays light */
       border-radius: 50%;
       position: relative;
     }
 
-    /* Clock numbers (shared style) */
+    /* Clock numbers */
     .number {
       position: absolute;
       top: 50%;
@@ -68,7 +86,7 @@
       transform: translate(-50%, -50%);
     }
 
-    /* Number positions using rotation around center */
+    /* Number positions */
     .num12 { transform: translate(-50%, -50%) rotate(0deg)   translateY(-62px) rotate(0deg); }
     .num1  { transform: translate(-50%, -50%) rotate(30deg)  translateY(-62px) rotate(-30deg); }
     .num2  { transform: translate(-50%, -50%) rotate(60deg)  translateY(-62px) rotate(-60deg); }
@@ -82,7 +100,7 @@
     .num10 { transform: translate(-50%, -50%) rotate(300deg) translateY(-62px) rotate(-300deg); }
     .num11 { transform: translate(-50%, -50%) rotate(330deg) translateY(-62px) rotate(-330deg); }
 
-    /* Tick marks container */
+    /* Ticks */
     .ticks {
       position: absolute;
       width: 100%;
