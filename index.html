@@ -1,18 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@700&family=Oswald:wght@500&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow:wght@700&family=Oswald:wght@500&display=swap"
+    rel="stylesheet"
+  />
 
   <style>
     /* =========================
-       RESET & BASE LAYOUT
+       TRANSPARENT BACKGROUND FIX
     ========================== */
+    html,
+    body {
+      background: transparent !important;
+    }
+
     body {
       margin: 0;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+
+      /* Notion embed/iframe friendly */
+      height: auto;          /* IMPORTANT: don't force 100vh */
+      padding: 0;
+      overflow: hidden;      /* prevent white edges/scroll */
     }
 
     /* Main horizontal container */
@@ -20,8 +38,7 @@
       display: flex;
       align-items: center;
       gap: 20px;
-					 background-color: transparent;
-
+      background: transparent;
     }
 
     /* =========================
@@ -30,7 +47,7 @@
     .clock {
       width: 160px;
       height: 160px;
-      background-color: #f0f0f0;
+      background-color: #f0f0f0; /* clock face */
       border-radius: 50%;
       position: relative;
     }
@@ -48,11 +65,10 @@
       height: 24px;
       text-align: center;
       line-height: 24px;
-      transform: translate(-50%, -50%); /* Base centering */
+      transform: translate(-50%, -50%);
     }
 
     /* Number positions using rotation around center */
-    /* This keeps everything consistent and easy to tweak */
     .num12 { transform: translate(-50%, -50%) rotate(0deg)   translateY(-62px) rotate(0deg); }
     .num1  { transform: translate(-50%, -50%) rotate(30deg)  translateY(-62px) rotate(-30deg); }
     .num2  { transform: translate(-50%, -50%) rotate(60deg)  translateY(-62px) rotate(-60deg); }
@@ -80,7 +96,7 @@
       background-color: #191919;
       left: 50%;
       top: 0;
-      transform-origin: 50% 80px; /* half of clock size */
+      transform-origin: 50% 80px;
     }
 
     .tick.major {
@@ -138,7 +154,7 @@
     }
 
     .flip-card {
-      background-color: #2C2C2C;
+      background-color: #2c2c2c;
       color: #f0f0f0;
       min-width: 90px;
       border-radius: 8px;
@@ -146,7 +162,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
     }
 
     .flip-card span {
@@ -216,12 +232,9 @@
       const minutes = now.getMinutes();
       const hours = now.getHours();
 
-      document.getElementById("secondHand").style.transform =
-        `rotate(${seconds * 6}deg)`;
-      document.getElementById("minuteHand").style.transform =
-        `rotate(${minutes * 6 + seconds * 0.1}deg)`;
-      document.getElementById("hourHand").style.transform =
-        `rotate(${(hours % 12) * 30 + minutes * 0.5}deg)`;
+      document.getElementById("secondHand").style.transform = `rotate(${seconds * 6}deg)`;
+      document.getElementById("minuteHand").style.transform = `rotate(${minutes * 6 + seconds * 0.1}deg)`;
+      document.getElementById("hourHand").style.transform = `rotate(${(hours % 12) * 30 + minutes * 0.5}deg)`;
     }
 
     setInterval(updateClock, 1000);
@@ -232,8 +245,8 @@
     ========================== */
     function updateDate() {
       const now = new Date();
-      const days = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
-      const months = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+      const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+      const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
       document.getElementById("day").innerText = days[now.getDay()];
       document.getElementById("date").innerText = now.getDate();
@@ -244,3 +257,4 @@
     setInterval(updateDate, 60000);
   </script>
 </body>
+</html>
